@@ -5,7 +5,10 @@
   "description": "Modernes UI, permanente Sidebar, 5 Themes, freies CSS, individuelle Startseite und ein neu gestalteter Stundenplan/Kalender für Schulmanager Online.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "schulmanager-enhanced@example.local",
+      "id": "schulmanager-enhanced@Maxi2555.dev",
+      "data_collection_permissions": {
+        "required": ["none"]
+      },
       "strict_min_version": "109.0"
     }
   },
