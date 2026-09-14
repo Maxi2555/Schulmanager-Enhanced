@@ -56,6 +56,128 @@ html.smcu-theme-nitro-sunset {
   --smcu-sidebar-border: rgba(255,255,255,0.08);
 }
 
+/* -- 10 weitere Nitro-Themes -- */
+html.smcu-theme-nitro-emerald {
+  --smcu-accent: #11998e;
+  --smcu-accent-rgb: 17,153,142;
+  --smcu-accent-grad: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  --smcu-sidebar-bg: rgba(10,26,24,0.82);
+  --smcu-sidebar-fg: #eafff6;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+html.smcu-theme-nitro-cherry {
+  --smcu-accent: #eb3349;
+  --smcu-accent-rgb: 235,51,73;
+  --smcu-accent-grad: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+  --smcu-sidebar-bg: rgba(28,10,14,0.82);
+  --smcu-sidebar-fg: #fff0f0;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+html.smcu-theme-nitro-cyber {
+  --smcu-accent: #4facfe;
+  --smcu-accent-rgb: 79,172,254;
+  --smcu-accent-grad: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --smcu-sidebar-bg: rgba(8,16,28,0.82);
+  --smcu-sidebar-fg: #eaf8ff;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+html.smcu-theme-nitro-gold {
+  --smcu-accent: #f7971e;
+  --smcu-accent-rgb: 247,151,30;
+  --smcu-accent-grad: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+  --smcu-sidebar-bg: rgba(28,22,8,0.82);
+  --smcu-sidebar-fg: #fff8e6;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+html.smcu-theme-nitro-ocean {
+  --smcu-accent: #2193b0;
+  --smcu-accent-rgb: 33,147,176;
+  --smcu-accent-grad: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);
+  --smcu-sidebar-bg: rgba(8,20,26,0.82);
+  --smcu-sidebar-fg: #eafcff;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+
+/* -- 5 "prominente" Nitro-Themes: zusätzlich farbiger Seitenhintergrund + mehr Transparenz -- */
+html.smcu-theme-nitro-galaxy {
+  --smcu-accent: #7b2ff7;
+  --smcu-accent-rgb: 123,47,247;
+  --smcu-accent-grad: linear-gradient(135deg, #5865F2 0%, #7b2ff7 100%);
+  --smcu-sidebar-bg: rgba(24,22,40,0.55);
+  --smcu-sidebar-fg: #f2eeff;
+  --smcu-sidebar-border: rgba(255,255,255,0.10);
+  --smcu-page-grad: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+}
+html.smcu-theme-nitro-lava {
+  --smcu-accent: #ff4500;
+  --smcu-accent-rgb: 255,69,0;
+  --smcu-accent-grad: linear-gradient(135deg, #ff4500 0%, #8b0000 100%);
+  --smcu-sidebar-bg: rgba(30,10,8,0.55);
+  --smcu-sidebar-fg: #fff2ea;
+  --smcu-sidebar-border: rgba(255,255,255,0.10);
+  --smcu-page-grad: linear-gradient(135deg, #1a0000 0%, #4d0000 55%, #ff4500 100%);
+}
+html.smcu-theme-nitro-candy {
+  --smcu-accent: #c724b1;
+  --smcu-accent-rgb: 199,36,177;
+  --smcu-accent-grad: linear-gradient(135deg, #fc00ff 0%, #00dbde 100%);
+  --smcu-sidebar-bg: rgba(28,14,34,0.55);
+  --smcu-sidebar-fg: #fdeeff;
+  --smcu-sidebar-border: rgba(255,255,255,0.10);
+  --smcu-page-grad: linear-gradient(135deg, #1a0b2e 0%, #4a0e63 55%, #c724b1 100%);
+}
+html.smcu-theme-nitro-neon {
+  --smcu-accent: #00ff9d;
+  --smcu-accent-rgb: 0,255,157;
+  --smcu-accent-grad: linear-gradient(135deg, #00c9ff 0%, #00ff9d 100%);
+  --smcu-sidebar-bg: rgba(6,14,16,0.55);
+  --smcu-sidebar-fg: #eafffa;
+  --smcu-sidebar-border: rgba(255,255,255,0.10);
+  --smcu-page-grad: linear-gradient(135deg, #050505 0%, #0f2027 55%, #00c9ff 100%);
+}
+html.smcu-theme-nitro-royale {
+  --smcu-accent: #c9a227;
+  --smcu-accent-rgb: 201,162,39;
+  --smcu-accent-grad: linear-gradient(135deg, #c9a227 0%, #5865F2 100%);
+  --smcu-sidebar-bg: rgba(20,18,10,0.55);
+  --smcu-sidebar-fg: #fff8e0;
+  --smcu-sidebar-border: rgba(255,255,255,0.10);
+  --smcu-page-grad: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 60%, #c9a227 100%);
+}
+
+/* Prominente Themes: farbiger Seitenhintergrund + stärkeres Glassmorphism */
+html.smcu-prominent {
+  background: var(--smcu-page-grad) fixed !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+html.smcu-prominent body { background: transparent !important; }
+html.smcu-prominent .card,
+html.smcu-prominent .tile,
+html.smcu-prominent .modal-content,
+html.smcu-prominent .dropdown-menu,
+html.smcu-prominent .popover,
+html.smcu-prominent .toast {
+  background: rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+}
+html.smcu-prominent #smcu-sidebar {
+  backdrop-filter: blur(26px) !important;
+  -webkit-backdrop-filter: blur(26px) !important;
+}
+html.smcu-prominent .form-control,
+html.smcu-prominent .form-select,
+html.smcu-prominent textarea,
+html.smcu-prominent .preview-box {
+  background-color: rgba(255,255,255,0.06) !important;
+}
+html.smcu-prominent table.dataTable > :not(caption) > * > *,
+html.smcu-prominent .table > :not(caption) > * > * {
+  background-color: transparent !important;
+}
+
 .card {
   border-width: 0 !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
@@ -140,6 +262,42 @@ html.smcu-dark-base .created-updated-info { color: #9aa0a8 !important; }
 html.smcu-dark-base .inactive-user { color: #9aa0a8bf !important; }
 html.smcu-dark-base hr { border-color: #33373d !important; }
 html.smcu-dark-base ::placeholder { color: #7a828c !important; }
+html.smcu-dark-base .nice-tabs > li > a { color: var(--smcu-accent) !important; }
+html.smcu-dark-base .btn-light,
+html.smcu-dark-base .action-button {
+  background-color: #2a2d33 !important;
+  border-color: #3a3e45 !important;
+  color: #e6e8eb !important;
+}
+
+/* Chat/Nachrichten: Schulmanager setzt an Bubbles feste (helle) Hintergründe
+   ohne explizite Textfarbe - unser globaler heller Text macht sie sonst
+   unlesbar. ":not(.other)" fängt "eigene" Nachrichten unabhängig davon ab,
+   welchen genauen Klassennamen Schulmanager dafür intern nutzt. */
+html.smcu-dark-base .day-indicator {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #e6e8eb !important;
+}
+html.smcu-dark-base .message .bubble {
+  background: #23262b !important;
+  color: #e6e8eb !important;
+}
+html.smcu-dark-base .message:not(.other) .bubble {
+  background: rgba(var(--smcu-accent-rgb), 0.35) !important;
+  color: #ffffff !important;
+}
+html.smcu-dark-base .message-username { color: var(--smcu-accent) !important; }
+html.smcu-dark-base .message-timestamp { color: #9aa0a8 !important; }
+html.smcu-dark-base .message-attachment a { color: var(--smcu-accent) !important; }
+html.smcu-dark-base .message-forward-button { color: #9aa0a8 !important; }
+
+/* Berichte-Modul (Klassenbuch): farbcodierte Abwesenheits-/Anwesenheits-
+   Zellen haben feste helle Hintergründe (grün/gelb/rot als Ampel), aber
+   keine eigene Textfarbe - im Dark Mode braucht es daher erzwungen
+   dunklen Text, damit die Prozentzahlen lesbar bleiben. */
+html.smcu-dark-base .calendar-table td > div[style*="background-color"] {
+  color: #1a1a1a !important;
+}
 
 /* ---------------------------------------------------------
    Layout: Sidebar ersetzt Headerbar vollständig
@@ -314,6 +472,16 @@ html.smcu-fixed-sidebar body { margin-left: var(--smcu-sidebar-width) !important
 .smcu-swatch-nitro-purple { background: linear-gradient(135deg, #5865F2, #EB459E); }
 .smcu-swatch-nitro-aurora { background: linear-gradient(135deg, #00c6ff, #7b2ff7); }
 .smcu-swatch-nitro-sunset { background: linear-gradient(135deg, #ff512f, #dd2476); }
+.smcu-swatch-nitro-emerald { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.smcu-swatch-nitro-cherry { background: linear-gradient(135deg, #eb3349, #f45c43); }
+.smcu-swatch-nitro-cyber { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.smcu-swatch-nitro-gold { background: linear-gradient(135deg, #f7971e, #ffd200); }
+.smcu-swatch-nitro-ocean { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+.smcu-swatch-nitro-galaxy { background: linear-gradient(135deg, #0f0c29, #302b63, #7b2ff7); box-shadow: 0 0 8px rgba(123,47,247,.6); }
+.smcu-swatch-nitro-lava { background: linear-gradient(135deg, #1a0000, #8b0000, #ff4500); box-shadow: 0 0 8px rgba(255,69,0,.6); }
+.smcu-swatch-nitro-candy { background: linear-gradient(135deg, #1a0b2e, #c724b1, #00dbde); box-shadow: 0 0 8px rgba(199,36,177,.6); }
+.smcu-swatch-nitro-neon { background: linear-gradient(135deg, #050505, #0f2027, #00ff9d); box-shadow: 0 0 8px rgba(0,255,157,.6); }
+.smcu-swatch-nitro-royale { background: linear-gradient(135deg, #0f0c29, #1a1a2e, #c9a227); box-shadow: 0 0 8px rgba(201,162,39,.6); }
 #smcu-accent-input { width: 100%; height: 36px; border: none; background: none; cursor: pointer; }
 .smcu-link-btn { background: none; border: none; color: var(--smcu-accent); font-size: 12px; cursor: pointer; padding: 4px 0; }
 #smcu-landing-select {
@@ -444,34 +612,109 @@ tr.smcu-break-row td { border: none !important; padding: 1px 0 !important; backg
    Kalender (FullCalendar) - modernes Redesign
    --------------------------------------------------------- */
 .fc {
-  --fc-border-color: rgba(0, 0, 0, 0.06);
+  --fc-border-color: rgba(0, 0, 0, 0.05);
   --fc-button-bg-color: var(--smcu-accent);
   --fc-button-border-color: var(--smcu-accent);
   --fc-button-hover-bg-color: var(--smcu-accent);
   --fc-button-hover-border-color: var(--smcu-accent);
   --fc-button-active-bg-color: var(--smcu-accent);
-  --fc-today-bg-color: rgba(var(--smcu-accent-rgb), 0.08);
+  --fc-today-bg-color: rgba(var(--smcu-accent-rgb), 0.10);
+  --fc-neutral-bg-color: rgba(0, 0, 0, 0.02);
+  --fc-page-bg-color: transparent;
+  font-family: inherit;
 }
 html.smcu-dark-base .fc {
-  --fc-border-color: rgba(255, 255, 255, 0.08);
-  --fc-page-bg-color: transparent;
-  --fc-neutral-bg-color: #1f2226;
+  --fc-border-color: rgba(255, 255, 255, 0.07);
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.03);
 }
-.fc-daygrid-day-number { font-weight: 600; }
+
+/* Toolbar: von "verbundenen" Buttons zu freistehenden Pill-Buttons */
+.fc-header-toolbar { margin-bottom: 1.25em !important; flex-wrap: wrap; gap: 10px; }
+.fc-toolbar-title {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-size: 1.25rem !important;
+  margin: 0 8px !important;
+}
+.fc-button-group { display: inline-flex; gap: 6px; }
+.fc-button {
+  border-radius: 9px !important;
+  padding: 6px 12px !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  box-shadow: none !important;
+  text-transform: capitalize;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.fc-button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.fc-button:disabled { opacity: 0.4 !important; }
+.fc-button-active, .fc-button:active { filter: brightness(0.92) !important; }
+.fc-icon { font-size: 1em; }
+.fc-today-button { background: transparent !important; color: var(--smcu-accent) !important; border: 1.5px solid var(--smcu-accent) !important; }
+
+/* Kopfzeile Wochentage */
 .fc-col-header-cell-cushion {
   text-transform: uppercase;
   font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  opacity: 0.7;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  padding: 10px 4px !important;
 }
-.fc-event {
-  border-radius: 6px !important;
-  border: none !important;
-  padding: 1px 6px !important;
-  font-weight: 600;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+.fc-col-header-cell.fc-day-sat, .fc-col-header-cell.fc-day-sun { opacity: 0.75; }
+
+/* Tageszellen: luftiger, abgerundet, mit sanftem Hover statt Excel-Gitter */
+.fc-scrollgrid { border-radius: 14px !important; overflow: hidden; }
+.fc-daygrid-day-frame {
+  padding: 4px !important;
+  transition: background 0.15s ease;
+  min-height: 90px;
 }
-.fc-daygrid-day-frame { transition: background 0.15s ease; border-radius: 6px; }
 .fc-daygrid-day-frame:hover { background: rgba(var(--smcu-accent-rgb), 0.05); }
-.fc-toolbar-title { font-weight: 700; letter-spacing: -0.01em; }
-.fc-button-primary { border-radius: 8px !important; }
+.fc-day-sat .fc-daygrid-day-frame, .fc-day-sun .fc-daygrid-day-frame {
+  background: rgba(0, 0, 0, 0.015);
+}
+.fc-daygrid-day-top { justify-content: flex-end; padding: 2px; }
+.fc-daygrid-day-number {
+  font-weight: 700;
+  font-size: 0.82rem;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s ease;
+}
+.fc-day-today .fc-daygrid-day-number {
+  background: var(--smcu-accent-grad);
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(var(--smcu-accent-rgb), 0.5);
+}
+.fc-day-other .fc-daygrid-day-number { opacity: 0.35; }
+.fc-daygrid-week-number {
+  font-size: 0.62rem;
+  font-weight: 700;
+  opacity: 0.4;
+  padding: 4px 6px !important;
+}
+
+/* Termine: kompakte, farbige Pills statt harter Balken */
+.fc-event {
+  border-radius: 7px !important;
+  border: none !important;
+  padding: 2px 7px !important;
+  margin: 2px 3px !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.fc-event:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25); z-index: 5; }
+.fc-event-time { font-weight: 700; opacity: 0.85; }
+.fc-daygrid-event-harness { margin-top: 2px !important; }
+
+/* Wochen-/Tagesansicht */
+.fc-timegrid-slot-label-cushion { font-size: 0.72rem; opacity: 0.6; }
+.fc-timegrid-now-indicator-line { border-color: #ff3b5c !important; }
+.fc-timegrid-now-indicator-arrow { border-color: #ff3b5c !important; color: #ff3b5c !important; }
+.fc-timegrid-col.fc-day-today, .fc-daygrid-day.fc-day-today {
+  background: rgba(var(--smcu-accent-rgb), 0.06) !important;
+}

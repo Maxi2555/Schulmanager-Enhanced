@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Schulmanager Enhanced",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Modernes UI, permanente Sidebar, 5 Themes, freies CSS, individuelle Startseite und ein neu gestalteter Stundenplan/Kalender für Schulmanager Online.",
   "browser_specific_settings": {
     "gecko": {

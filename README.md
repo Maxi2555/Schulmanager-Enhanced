@@ -4,10 +4,21 @@
 - **Permanente Sidebar** ersetzt die komplette Headerbar: Logo, alle
   Module (per Drag & Drop sortierbar, dauerhaft gespeichert), sowie
   Konto-Bereich (Mein Account, Benachrichtigungen, Impressum,
-  Datenschutz, Ausloggen).
-- **5 Themes**: Hell, Dunkel, sowie drei moderne Farbverlaufs-Themes
-  (Nitro Purple, Nitro Aurora, Nitro Sunset) mit Glass-Sidebar.
+  Datenschutz, Ausloggen). Wird bei jedem Laden der Seite automatisch
+  neu eingelesen, damit neue/entfernte Module sofort auftauchen.
+- **15 Themes**: Hell, Dunkel, sowie 13 Farbverlaufs-Themes im
+  "Nitro"-Stil (Purple, Aurora, Sunset, Emerald, Cherry, Cyber, Gold,
+  Ocean sowie 5 besonders "prominente" mit farbigem Seiten-Hintergrund
+  und starkem Glass-Effekt: Galaxy, Lava, Candy, Neon, Royale).
 - **Eigene Akzentfarbe** per Farbwähler, unabhängig vom Theme.
+- **Dark-Mode-Fixes für Chats & Berichte**: Nachrichten-Bubbles und die
+  farbcodierten Anwesenheits-Zellen im Klassenbuch bleiben jetzt auch
+  im Dark Mode lesbar (Schulmanager setzt dort feste helle
+  Hintergründe ohne eigene Textfarbe).
+- **Anwesenheit statt Abwesenheit**: Im Klassenbuch-Berichte-Modul
+  werden alle Abwesenheits-Prozentwerte und -Stunden automatisch in
+  Anwesenheits-Werte umgerechnet (100 % = anwesend statt 0 % =
+  anwesend) inklusive umbenannter Überschriften.
 - **Eigenes CSS**: Freitextfeld für beliebige zusätzliche Anpassungen,
   wird live angewendet und gespeichert.
 - **Einstellbare Startseite**: beim Öffnen von Schulmanager direkt zu

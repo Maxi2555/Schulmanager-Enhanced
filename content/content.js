@@ -17,8 +17,25 @@
     { id: "nitro-purple", label: "Nitro Purple" },
     { id: "nitro-aurora", label: "Nitro Aurora" },
     { id: "nitro-sunset", label: "Nitro Sunset" },
+    { id: "nitro-emerald", label: "Nitro Emerald" },
+    { id: "nitro-cherry", label: "Nitro Cherry" },
+    { id: "nitro-cyber", label: "Nitro Cyber" },
+    { id: "nitro-gold", label: "Nitro Gold" },
+    { id: "nitro-ocean", label: "Nitro Ocean" },
+    { id: "nitro-galaxy", label: "Nitro Galaxy \u2728" },
+    { id: "nitro-lava", label: "Nitro Lava \u2728" },
+    { id: "nitro-candy", label: "Nitro Candy \u2728" },
+    { id: "nitro-neon", label: "Nitro Neon \u2728" },
+    { id: "nitro-royale", label: "Nitro Royale \u2728" },
   ];
-  const SMCU_DARK_BASE = new Set(["dark", "nitro-purple", "nitro-aurora", "nitro-sunset"]);
+  const SMCU_DARK_BASE = new Set([
+    "dark",
+    "nitro-purple", "nitro-aurora", "nitro-sunset",
+    "nitro-emerald", "nitro-cherry", "nitro-cyber", "nitro-gold", "nitro-ocean",
+    "nitro-galaxy", "nitro-lava", "nitro-candy", "nitro-neon", "nitro-royale",
+  ]);
+  // "Prominente" Themes: zusätzlich farbiger Seitenhintergrund + stärkere Transparenz
+  const SMCU_PROMINENT = new Set(["nitro-galaxy", "nitro-lava", "nitro-candy", "nitro-neon", "nitro-royale"]);
 
   const PERIODS = [
     { n: 1, start: "07:55", end: "08:40" },
@@ -129,6 +146,7 @@
     SMCU_THEMES.forEach((t) => root.classList.remove(`smcu-theme-${t.id}`));
     root.classList.add(`smcu-theme-${themeId}`);
     root.classList.toggle("smcu-dark-base", SMCU_DARK_BASE.has(themeId));
+    root.classList.toggle("smcu-prominent", SMCU_PROMINENT.has(themeId));
   }
 
   function applyAccent(hex) {
@@ -649,12 +667,68 @@
   }
 
   /* =========================================================
+     Berichte-Modul: Abwesenheit -> Anwesenheit umrechnen
+     (0% Abwesenheit = 100% Anwesenheit, statt umgekehrt zu zählen)
+     ========================================================= */
+  const processedAttendanceNodes = new WeakSet();
+
+  function invertAttendanceStats() {
+    const tiles = document.querySelectorAll(".tile");
+    tiles.forEach((tile) => {
+      const header = tile.querySelector(":scope > .tile-header");
+      if (!header || !header.textContent.includes("Abwesenheit")) return;
+
+      if (header.children.length === 0 && !header.dataset.smcuRelabeled) {
+        header.textContent = header.textContent.replace(/Abwesenheit/g, "Anwesenheit");
+        header.dataset.smcuRelabeled = "1";
+      }
+
+      const body = tile.querySelector(":scope > .tile-body");
+      if (!body) return;
+
+      const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let n;
+      while ((n = walker.nextNode())) nodes.push(n);
+
+      nodes.forEach((node) => {
+        if (processedAttendanceNodes.has(node)) return;
+        let text = node.textContent;
+        let changed = false;
+
+        text = text.replace(/(\d+)(?:,(\d+))?\s?%/g, (match, intPart, decPart) => {
+          changed = true;
+          const decimals = decPart ? decPart.length : 0;
+          const value = parseFloat(decPart ? `${intPart}.${decPart}` : intPart);
+          const inverted = Math.max(0, 100 - value);
+          return `${inverted.toFixed(decimals).replace(".", ",")} %`;
+        });
+
+        text = text.replace(/\(([\d.,]+)\s*\/\s*([\d.,]+)\s*Std\.\)/g, (match, presentStr, totalStr) => {
+          changed = true;
+          const decimals = (presentStr.split(",")[1] || "").length;
+          const absentVal = parseFloat(presentStr.replace(",", "."));
+          const totalVal = parseFloat(totalStr.replace(",", "."));
+          const presentVal = Math.max(0, totalVal - absentVal);
+          return `(${presentVal.toFixed(decimals).replace(".", ",")} / ${totalStr} Std.)`;
+        });
+
+        if (changed) node.textContent = text;
+        processedAttendanceNodes.add(node);
+      });
+    });
+  }
+
+  /* =========================================================
      Beobachtung von Angular-Re-Renders
      ========================================================= */
   let enhanceDebounce;
   function scheduleEnhance() {
     clearTimeout(enhanceDebounce);
-    enhanceDebounce = setTimeout(enhanceTimetableIfPresent, 150);
+    enhanceDebounce = setTimeout(() => {
+      enhanceTimetableIfPresent();
+      invertAttendanceStats();
+    }, 150);
   }
 
   /* =========================================================
@@ -670,11 +744,17 @@
     buildSettingsModal();
     await initSettingsValues();
 
-    let cache = await getStored(MODULE_CACHE_KEY, []);
-    if (!cache.length) cache = (await refreshModuleList()) || [];
+    // Sofort aus dem Cache rendern (kein Warten -> keine leere Sidebar beim Start),
+    // danach im Hintergrund einmalig neu einlesen, damit neue/entfernte Module
+    // bei jedem Login automatisch aktuell sind.
     await renderSidebarModules();
     renderSidebarExtras();
     await populateLandingSelect();
+    refreshModuleList().then(async () => {
+      await renderSidebarModules();
+      renderSidebarExtras();
+      await populateLandingSelect();
+    });
 
     const observer = new MutationObserver(scheduleEnhance);
     observer.observe(document.body, { childList: true, subtree: true });
