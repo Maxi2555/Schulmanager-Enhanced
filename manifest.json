@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Schulmanager Enhanced",
+  "version": "2.0.0",
+  "description": "Modernes UI, permanente Sidebar, 5 Themes, freies CSS, individuelle Startseite und ein neu gestalteter Stundenplan/Kalender für Schulmanager Online.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "schulmanager-enhanced@example.local",
+      "strict_min_version": "109.0"
+    }
+  },
+  "icons": {
+    "48": "icons/icon48.svg",
+    "96": "icons/icon96.svg"
+  },
+  "action": {
+    "default_title": "Schulmanager Enhanced",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "48": "icons/icon48.svg"
+    }
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "*://*.schulmanager-online.de/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.schulmanager-online.de/*"],
+      "css": ["content/base-overrides.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*.schulmanager-online.de/*"],
+      "js": ["content/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

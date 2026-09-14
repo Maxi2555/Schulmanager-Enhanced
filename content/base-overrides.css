@@ -1,0 +1,477 @@
+/* ============================================================
+   Schulmanager Enhanced - Basis-Overrides & Theming
+   ============================================================ */
+
+:root {
+  --smcu-accent: #2f6f4e;
+  --smcu-accent-rgb: 47,111,78;
+  --smcu-accent-grad: linear-gradient(135deg, #2f6f4e, #3fae76);
+  --smcu-sidebar-bg: #ffffff;
+  --smcu-sidebar-fg: #212529;
+  --smcu-sidebar-border: #e5e7eb;
+  --smcu-sidebar-width: 268px;
+}
+
+/* ---------------------------------------------------------
+   Themes
+   --------------------------------------------------------- */
+html.smcu-theme-light {
+  --smcu-accent: #2f6f4e;
+  --smcu-accent-rgb: 47,111,78;
+  --smcu-accent-grad: linear-gradient(135deg, #2f6f4e, #3fae76);
+  --smcu-sidebar-bg: #ffffff;
+  --smcu-sidebar-fg: #212529;
+  --smcu-sidebar-border: #e5e7eb;
+}
+html.smcu-theme-dark {
+  --smcu-accent: #3fae76;
+  --smcu-accent-rgb: 63,174,118;
+  --smcu-accent-grad: linear-gradient(135deg, #2f6f4e, #3fae76);
+  --smcu-sidebar-bg: #1a1c20;
+  --smcu-sidebar-fg: #e6e8eb;
+  --smcu-sidebar-border: #2c2f34;
+}
+html.smcu-theme-nitro-purple {
+  --smcu-accent: #5865F2;
+  --smcu-accent-rgb: 88,101,242;
+  --smcu-accent-grad: linear-gradient(135deg, #5865F2 0%, #EB459E 100%);
+  --smcu-sidebar-bg: rgba(22,20,32,0.82);
+  --smcu-sidebar-fg: #f5f5fa;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+html.smcu-theme-nitro-aurora {
+  --smcu-accent: #0072ff;
+  --smcu-accent-rgb: 0,114,255;
+  --smcu-accent-grad: linear-gradient(135deg, #00c6ff 0%, #0072ff 55%, #7b2ff7 100%);
+  --smcu-sidebar-bg: rgba(10,18,32,0.82);
+  --smcu-sidebar-fg: #f0f6ff;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+html.smcu-theme-nitro-sunset {
+  --smcu-accent: #ff512f;
+  --smcu-accent-rgb: 255,81,47;
+  --smcu-accent-grad: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
+  --smcu-sidebar-bg: rgba(30,14,20,0.82);
+  --smcu-sidebar-fg: #fff0f4;
+  --smcu-sidebar-border: rgba(255,255,255,0.08);
+}
+
+.card {
+  border-width: 0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 14px !important;
+}
+
+/* Akzentfarbe konsequent auf hart kodierte Elemente anwenden
+   (Schulmanager nutzt an vielen Stellen feste Hex-Werte statt
+   CSS-Variablen, daher direkte Selektor-Overrides) */
+.tile > .tile-header,
+.modal-content .modal-header,
+.popover-header,
+.btn-primary,
+.page-item.active .page-link,
+.nav-pills .nav-link.active,
+.dropdown-item.active,
+.list-group-item.active {
+  background: var(--smcu-accent-grad) !important;
+  border-color: var(--smcu-accent) !important;
+  color: #fff !important;
+}
+a { color: var(--smcu-accent); }
+a:hover { filter: brightness(0.85); }
+input:checked[type=checkbox],
+input:checked[type=radio],
+.form-check-input:checked {
+  background-color: var(--smcu-accent) !important;
+  border-color: var(--smcu-accent) !important;
+}
+
+/* ---------------------------------------------------------
+   Dark-Basis (für Dark Mode + alle 3 Nitro-Themes)
+   --------------------------------------------------------- */
+html.smcu-dark-base { color-scheme: dark; }
+html.smcu-dark-base {
+  --bs-body-bg: #16181c !important;
+  --bs-body-color: #e6e8eb !important;
+  --bs-tertiary-bg: #1f2226 !important;
+  --bs-secondary-bg: #23262b !important;
+  --bs-border-color: #33373d !important;
+  --bs-emphasis-color: #ffffff !important;
+}
+html.smcu-dark-base body {
+  background-color: #16181c !important;
+  color: #e6e8eb !important;
+}
+html.smcu-dark-base .select-card > div {
+  background: #1f2226 !important;
+  color: #e6e8eb !important;
+}
+html.smcu-dark-base .select-card > div:hover {
+  background: var(--smcu-accent) !important;
+  color: #ffffff !important;
+}
+html.smcu-dark-base .blue-focus-area {
+  background-color: rgba(var(--smcu-accent-rgb), 0.12) !important;
+}
+html.smcu-dark-base .card,
+html.smcu-dark-base .modal-content,
+html.smcu-dark-base .dropdown-menu,
+html.smcu-dark-base .popover,
+html.smcu-dark-base .tile,
+html.smcu-dark-base .toast {
+  background-color: #1f2226 !important;
+  color: #e6e8eb !important;
+}
+html.smcu-dark-base .form-control,
+html.smcu-dark-base .form-select,
+html.smcu-dark-base textarea,
+html.smcu-dark-base .preview-box {
+  background-color: #23262b !important;
+  color: #e6e8eb !important;
+  border-color: #3a3e45 !important;
+}
+html.smcu-dark-base table.dataTable > :not(caption) > * > *,
+html.smcu-dark-base .table > :not(caption) > * > * {
+  background-color: #1f2226 !important;
+  color: #e6e8eb !important;
+}
+html.smcu-dark-base .broad-alert,
+html.smcu-dark-base .created-updated-info { color: #9aa0a8 !important; }
+html.smcu-dark-base .inactive-user { color: #9aa0a8bf !important; }
+html.smcu-dark-base hr { border-color: #33373d !important; }
+html.smcu-dark-base ::placeholder { color: #7a828c !important; }
+
+/* ---------------------------------------------------------
+   Layout: Sidebar ersetzt Headerbar vollständig
+   --------------------------------------------------------- */
+html.smcu-fixed-sidebar .sm-navbar { display: none !important; }
+html.smcu-fixed-sidebar body { margin-left: var(--smcu-sidebar-width) !important; }
+
+#smcu-mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 999998;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: none;
+  background: var(--smcu-accent-grad);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+#smcu-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--smcu-sidebar-width);
+  background: var(--smcu-sidebar-bg);
+  color: var(--smcu-sidebar-fg);
+  border-right: 1px solid var(--smcu-sidebar-border);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-family: sans-serif;
+  transition: transform 0.2s ease;
+}
+#smcu-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px;
+  background: var(--smcu-accent-grad);
+  cursor: pointer;
+}
+#smcu-sidebar-brand img { height: 26px; }
+#smcu-sidebar-brand span { color: #fff; font-weight: 700; font-size: 14px; }
+.smcu-sidebar-section-title {
+  padding: 14px 16px 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.55;
+}
+#smcu-sidebar-list, #smcu-sidebar-extras {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+#smcu-sidebar-list { overflow-y: auto; flex: 1; min-height: 60px; }
+#smcu-sidebar-list li, #smcu-sidebar-extras li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  border-left: 3px solid transparent;
+}
+#smcu-sidebar-list li { cursor: grab; }
+#smcu-sidebar-list li:hover, #smcu-sidebar-extras li:hover {
+  background: rgba(var(--smcu-accent-rgb), 0.12);
+}
+#smcu-sidebar-list li.smcu-dragging { opacity: 0.4; }
+#smcu-sidebar-list li.smcu-drag-over { border-left-color: var(--smcu-accent); }
+#smcu-sidebar-list li .fa, #smcu-sidebar-extras li .fa { width: 18px; text-align: center; }
+#smcu-sidebar-list li a,
+#smcu-sidebar-extras li a,
+#smcu-sidebar-extras li button.smcu-logout-btn {
+  flex: 1;
+  color: inherit !important;
+  text-decoration: none !important;
+  background: none;
+  border: none;
+  font-size: 13px;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+#smcu-sidebar-empty { padding: 10px 16px; font-size: 12px; opacity: 0.6; }
+#smcu-sidebar-footer {
+  display: flex;
+  border-top: 1px solid var(--smcu-sidebar-border);
+}
+#smcu-settings-gear {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+#smcu-settings-gear:hover { background: rgba(var(--smcu-accent-rgb), 0.12); }
+
+@media (max-width: 900px) {
+  #smcu-mobile-toggle { display: flex; }
+  #smcu-sidebar { transform: translateX(-100%); box-shadow: 8px 0 30px rgba(0, 0, 0, 0.3); }
+  #smcu-sidebar.smcu-open { transform: translateX(0); }
+  html.smcu-fixed-sidebar body { margin-left: 0 !important; }
+}
+
+/* ---------------------------------------------------------
+   Einstellungs-Dialog
+   --------------------------------------------------------- */
+#smcu-settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#smcu-settings-overlay.smcu-open { display: flex; }
+#smcu-settings-modal {
+  width: 480px;
+  max-width: 92vw;
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--smcu-sidebar-bg);
+  color: var(--smcu-sidebar-fg);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  font-family: sans-serif;
+}
+.smcu-settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--smcu-sidebar-border);
+  position: sticky;
+  top: 0;
+  background: inherit;
+}
+.smcu-settings-header button { background: none; border: none; font-size: 18px; cursor: pointer; color: inherit; }
+.smcu-settings-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 20px; }
+.smcu-settings-body h4 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6; }
+#smcu-theme-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.smcu-theme-swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 2px solid var(--smcu-sidebar-border);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+.smcu-theme-swatch.smcu-active { border-color: var(--smcu-accent); }
+.smcu-swatch-preview { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
+.smcu-swatch-light { background: #f6f8fa; border: 1px solid #ddd; }
+.smcu-swatch-dark { background: #16181c; }
+.smcu-swatch-nitro-purple { background: linear-gradient(135deg, #5865F2, #EB459E); }
+.smcu-swatch-nitro-aurora { background: linear-gradient(135deg, #00c6ff, #7b2ff7); }
+.smcu-swatch-nitro-sunset { background: linear-gradient(135deg, #ff512f, #dd2476); }
+#smcu-accent-input { width: 100%; height: 36px; border: none; background: none; cursor: pointer; }
+.smcu-link-btn { background: none; border: none; color: var(--smcu-accent); font-size: 12px; cursor: pointer; padding: 4px 0; }
+#smcu-landing-select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--smcu-sidebar-border);
+  background: var(--smcu-sidebar-bg);
+  color: inherit;
+}
+#smcu-custom-css-input {
+  width: 100%;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--smcu-sidebar-border);
+  background: var(--smcu-sidebar-bg);
+  color: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.smcu-secondary-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--smcu-sidebar-border);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+.smcu-secondary-btn:hover { border-color: var(--smcu-accent); color: var(--smcu-accent); }
+
+/* ---------------------------------------------------------
+   Stundenplan - modernes Redesign
+   --------------------------------------------------------- */
+.smcu-timetable-wrap { position: relative; }
+.calendar-table {
+  border-collapse: separate !important;
+  border-spacing: 0 5px !important;
+  width: 100%;
+}
+.calendar-table thead th {
+  border: none !important;
+  padding-bottom: 10px !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
+}
+.calendar-table tbody td, .calendar-table tbody th {
+  border: none !important;
+  vertical-align: middle;
+}
+.calendar-table tbody th {
+  text-align: center;
+  padding: 8px 6px !important;
+  width: 64px;
+}
+.smcu-period-num { display: block; font-weight: 700; font-size: 1rem; }
+.smcu-period-time { display: block; font-size: 0.65rem; opacity: 0.6; white-space: nowrap; }
+
+.calendar-table th.smcu-today-col,
+.calendar-table td.smcu-today-cell {
+  background: rgba(var(--smcu-accent-rgb), 0.07);
+  border-radius: 10px;
+}
+
+.lesson-cell {
+  border-radius: 10px !important;
+  border-left: 4px solid var(--smcu-subject-color, var(--smcu-accent)) !important;
+  background: var(--smcu-subject-bg, rgba(0, 0, 0, 0.035)) !important;
+  padding: 6px 10px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.lesson-cell:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12); }
+.lesson-cell.cancelled {
+  opacity: 0.55;
+  text-decoration: line-through;
+  border-left-color: #999 !important;
+  background: rgba(150, 150, 150, 0.08) !important;
+}
+
+tr.smcu-break-row td { border: none !important; padding: 1px 0 !important; background: transparent !important; }
+.smcu-break-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  margin: 0 8px;
+  border-radius: 999px;
+  background: rgba(var(--smcu-accent-rgb), 0.10);
+  color: var(--smcu-accent);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.smcu-now-line {
+  position: absolute;
+  height: 2px;
+  background: #ff3b5c;
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+.smcu-now-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #ff3b5c; margin-left: -4px; box-shadow: 0 0 6px #ff3b5c;
+  flex-shrink: 0;
+}
+.smcu-now-label {
+  margin-left: 6px;
+  background: #ff3b5c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+/* ---------------------------------------------------------
+   Kalender (FullCalendar) - modernes Redesign
+   --------------------------------------------------------- */
+.fc {
+  --fc-border-color: rgba(0, 0, 0, 0.06);
+  --fc-button-bg-color: var(--smcu-accent);
+  --fc-button-border-color: var(--smcu-accent);
+  --fc-button-hover-bg-color: var(--smcu-accent);
+  --fc-button-hover-border-color: var(--smcu-accent);
+  --fc-button-active-bg-color: var(--smcu-accent);
+  --fc-today-bg-color: rgba(var(--smcu-accent-rgb), 0.08);
+}
+html.smcu-dark-base .fc {
+  --fc-border-color: rgba(255, 255, 255, 0.08);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: #1f2226;
+}
+.fc-daygrid-day-number { font-weight: 600; }
+.fc-col-header-cell-cushion {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+.fc-event {
+  border-radius: 6px !important;
+  border: none !important;
+  padding: 1px 6px !important;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+.fc-daygrid-day-frame { transition: background 0.15s ease; border-radius: 6px; }
+.fc-daygrid-day-frame:hover { background: rgba(var(--smcu-accent-rgb), 0.05); }
+.fc-toolbar-title { font-weight: 700; letter-spacing: -0.01em; }
+.fc-button-primary { border-radius: 8px !important; }

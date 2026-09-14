@@ -1,1 +1,82 @@
-# Schulmanager-Enhanced
+# Schulmanager Enhanced (Firefox Add-on)
+
+## Funktionen
+- **Permanente Sidebar** ersetzt die komplette Headerbar: Logo, alle
+  Module (per Drag & Drop sortierbar, dauerhaft gespeichert), sowie
+  Konto-Bereich (Mein Account, Benachrichtigungen, Impressum,
+  Datenschutz, Ausloggen).
+- **5 Themes**: Hell, Dunkel, sowie drei moderne Farbverlaufs-Themes
+  (Nitro Purple, Nitro Aurora, Nitro Sunset) mit Glass-Sidebar.
+- **Eigene Akzentfarbe** per Farbwähler, unabhängig vom Theme.
+- **Eigenes CSS**: Freitextfeld für beliebige zusätzliche Anpassungen,
+  wird live angewendet und gespeichert.
+- **Einstellbare Startseite**: beim Öffnen von Schulmanager direkt zu
+  einem gewünschten Modul springen (z.B. Stundenplan) statt zum
+  Dashboard.
+- **Modernisierter Stundenplan**: echte Uhrzeiten pro Stunde links,
+  automatisch berechnete Pausen-Leisten ("5 min Pause" etc.), farblich
+  markierte Fächer, hervorgehobene heutige Spalte und eine rote
+  Live-Zeit-Linie, die während der aktuellen Stunde die aktuelle
+  Position anzeigt.
+- **Modernisierter Kalender**: abgerundete Termine, dezente
+  Hover-Effekte, Akzentfarbe in Toolbar/Buttons, Dark-Mode-taugliche
+  Darstellung.
+
+## Bedienung
+- Sidebar ist immer sichtbar (auf schmalen Bildschirmen über den
+  ☰-Button links oben ein-/ausklappbar).
+- ⚙ „Einstellungen" unten in der Sidebar öffnet den Dialog für Theme,
+  Akzentfarbe, Startseite, eigenes CSS und „Module neu einlesen".
+- Modul-Reihenfolge direkt in der Sidebar per Ziehen ändern.
+
+## Die Stundenplan-Zeiten
+```
+1: 07:55–08:40   6: 12:35–13:20
+2: 08:45–09:30   7: 13:30–14:15
+3: 09:50–10:35   8: 14:20–15:05
+4: 10:40–11:25   9: 15:10–15:55
+5: 11:45–12:30  10: 16:00–16:45
+                11: 16:50–17:35
+```
+Pausenlängen werden automatisch aus den Lücken zwischen den Stunden
+berechnet und beschriftet. Falls dein Stundenplan andere Zeiten hat,
+lässt sich das Array `PERIODS` in `content/content.js` anpassen.
+
+## Technischer Hintergrund / Grenzen
+- Modul-Liste und Konto-Menü stehen bei Schulmanager immer im DOM
+  (nur per CSS versteckt), daher liest das Add-on sie direkt aus, ohne
+  irgendetwas zu öffnen oder zu klicken.
+- Die Live-Zeit-Linie im Stundenplan wird anhand der tatsächlich
+  gerenderten Zeilen-Positionen berechnet und alle 20 Sekunden sowie
+  bei Fenstergröße-Änderung aktualisiert.
+- Interaktive Voransichten (Nachrichten-/Benachrichtigungs-Dropdowns
+  mit Live-Inhalten) werden nicht 1:1 nachgebaut - die Sidebar
+  verlinkt stattdessen direkt auf die jeweiligen Seiten.
+- Da es sich um eine reine DOM-/CSS-Erweiterung ohne Zugriff auf die
+  Schulmanager-API handelt, kann eine größere Änderung am
+  Schulmanager-Frontend (z.B. andere CSS-Klassennamen) einzelne
+  Funktionen beeinträchtigen. In dem Fall bitte im Zahnrad-Dialog auf
+  „Module neu einlesen" klicken bzw. Bescheid geben, dann passe ich
+  die Selektoren an.
+
+## Installation (temporär, zum Testen)
+1. Firefox öffnen und `about:debugging#/runtime/this-firefox` aufrufen
+2. „Temporäres Add-on laden…" klicken
+3. Die Datei `manifest.json` aus diesem Ordner auswählen
+4. Schulmanager Online öffnen
+
+Temporär geladene Add-ons verschwinden beim Neustart von Firefox und
+müssen dann erneut geladen werden.
+
+## Dauerhafte Installation
+Für eine dauerhafte, signierte Installation muss das Add-on bei
+Mozilla (addons.mozilla.org) eingereicht werden – auch für rein
+private/unlisted Nutzung kostenlos möglich. Alternativ in der
+Developer Edition / Nightly `xpinstall.signatures.required` auf
+`false` setzen (nur für Entwicklungszwecke).
+
+## Wichtiger Hinweis
+Dieses Add-on verändert nur Aussehen/Struktur der bereits im Browser
+geladenen Seite (CSS/DOM), sendet nichts an Dritte, benötigt keine
+eigene Server-Anbindung und greift nicht in die Datenhaltung von
+Schulmanager Online ein.
