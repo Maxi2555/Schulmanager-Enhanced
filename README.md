@@ -1,5 +1,15 @@
 # Schulmanager Enhanced (Firefox Add-on)
 
+Schulmanager Enhanced verbessert Schulmanager Online mit einer anpassbaren
+Sidebar, modernen Themes und einem übersichtlicheren Stundenplan. Die
+wichtigsten Funktionen:
+
+- Permanente, sortierbare Sidebar mit allen Modulen und Kontobereich
+- 15 Themes, eigene Akzentfarbe und frei definierbares CSS
+- Individuelle Startseite und optimierte Dark-Mode-Darstellung
+- Verbesserter Stundenplan mit Uhrzeiten, Pausen, Tagesmarkierung und Live-Zeitlinie
+- Stundenplan-Export als `.ics`-Datei für Kalender-Apps
+
 ## Funktionen
 - **Permanente Sidebar** ersetzt die komplette Headerbar: Logo, alle
   Module (per Drag & Drop sortierbar, dauerhaft gespeichert), sowie
