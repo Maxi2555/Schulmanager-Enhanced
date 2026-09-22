@@ -13,14 +13,14 @@
     }
   },
   "icons": {
-    "48": "icons/icon48.svg",
-    "96": "icons/icon96.svg"
+    "48": "icons/icon48.png",
+    "96": "icons/icon96.png"
   },
   "action": {
     "default_title": "Schulmanager Enhanced",
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "48": "icons/icon48.svg"
+      "48": "icons/icon48.png"
     }
   },
   "permissions": ["storage"],
