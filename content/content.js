@@ -666,6 +666,92 @@
     else currentTimetableTable = null;
   }
 
+  let restoringPastWeek = false;
+
+  function getTimetableWeekSignature() {
+    const table = document.querySelector("table.calendar-table");
+    if (!table) return "";
+    return [...table.querySelectorAll("thead th")].map((th) => th.textContent.trim()).join("|");
+  }
+
+  function waitForTimetableWeekChange(previousSignature, timeoutMs) {
+    return new Promise((resolve) => {
+      const changed = () => {
+        const signature = getTimetableWeekSignature();
+        if (signature && signature !== previousSignature) {
+          observer.disconnect();
+          clearTimeout(timeout);
+          resolve(signature);
+        }
+      };
+      const observer = new MutationObserver(changed);
+      const timeout = setTimeout(() => {
+        observer.disconnect();
+        resolve("");
+      }, timeoutMs || 3000);
+      observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+      changed();
+    });
+  }
+
+  function cleanRecurringLessonMarkup(markup) {
+    const holder = document.createElement("div");
+    holder.innerHTML = markup;
+    holder.querySelectorAll(".lesson-cell").forEach((lesson) => {
+      lesson.classList.remove("cancelled", "substituted", "substitution", "changed");
+      lesson.removeAttribute("data-smcu-colored");
+      lesson.style.removeProperty("text-decoration");
+    });
+    return holder.innerHTML;
+  }
+
+  async function restorePastWeekDays() {
+    if (restoringPastWeek || currentTodayColIndex <= 1) return;
+    const currentTable = document.querySelector("table.calendar-table");
+    const previousSignature = getTimetableWeekSignature();
+    if (!currentTable || !previousSignature) return;
+    const pastDayCount = currentTodayColIndex - 1;
+
+    const nextButton = document.querySelector(".week-navigation .calendar-week-column-flex > div:last-child button");
+    if (!nextButton) return;
+
+    restoringPastWeek = true;
+    try {
+      nextButton.click();
+      if (!await waitForTimetableWeekChange(previousSignature)) return;
+
+      enhanceTimetableIfPresent();
+      const nextTable = document.querySelector("table.calendar-table");
+      const recurringRows = new Map(
+        [...(nextTable ? nextTable.querySelectorAll("tbody tr.smcu-period-row") : [])].map((row) => [
+          row.querySelector("th")?.textContent.trim().split(/\s+/)[0],
+          [...row.querySelectorAll("td")].map((cell) => cleanRecurringLessonMarkup(cell.innerHTML)),
+        ])
+      );
+
+      const previousButton = document.querySelector(".week-navigation .calendar-week-column-flex > div:first-child button");
+      if (!previousButton) return;
+      previousButton.click();
+      if (!await waitForTimetableWeekChange(getTimetableWeekSignature())) return;
+
+      const restoredTable = document.querySelector("table.calendar-table");
+      const restoredPeriods = [...(restoredTable ? restoredTable.querySelectorAll("tbody tr.smcu-period-row") : [])];
+      restoredPeriods.forEach((row) => {
+        const periodNumber = row.querySelector("th")?.textContent.trim().split(/\s+/)[0];
+        const recurringCells = recurringRows.get(periodNumber);
+        if (!recurringCells) return;
+        [...row.querySelectorAll("td")].forEach((cell, index) => {
+          if (index >= pastDayCount || recurringCells[index] === undefined) return;
+          cell.innerHTML = recurringCells[index];
+          cell.dataset.smcuWeekRestored = "1";
+        });
+      });
+      enhanceTimetable();
+    } finally {
+      restoringPastWeek = false;
+    }
+  }
+
   /* =========================================================
      Berichte-Modul: Abwesenheit -> Anwesenheit umrechnen
      (0% Abwesenheit = 100% Anwesenheit, statt umgekehrt zu zählen)
@@ -750,6 +836,8 @@
     await renderSidebarModules();
     renderSidebarExtras();
     await populateLandingSelect();
+    enhanceTimetableIfPresent();
+    restorePastWeekDays();
     refreshModuleList().then(async () => {
       await renderSidebarModules();
       renderSidebarExtras();
