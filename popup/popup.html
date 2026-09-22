@@ -6,20 +6,46 @@
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <h1>Schulmanager Enhanced</h1>
-  <p class="hint">
-    Öffne Schulmanager Online – links steht jetzt eine feste Sidebar mit
-    allen Modulen (per Ziehen sortierbar) und einem ⚙-Button für Theme,
-    Akzentfarbe, Startseite und eigenes CSS.
-  </p>
-  <div class="quick-themes">
-    <button data-theme="light">Hell</button>
-    <button data-theme="dark">Dunkel</button>
-    <button data-theme="nitro-purple">Nitro Purple</button>
-    <button data-theme="nitro-aurora">Nitro Aurora</button>
-    <button data-theme="nitro-sunset">Nitro Sunset</button>
-  </div>
-  <p class="hint small">Theme-Schnellwahl wirkt auf offene Schulmanager-Tabs.</p>
+  <header>
+    <div>
+      <p class="eyebrow">Schulmanager</p>
+      <h1>Enhanced</h1>
+    </div>
+    <span class="status-dot" aria-label="Gespeichert"></span>
+  </header>
+
+  <section>
+    <div class="section-heading">
+      <h2>Theme</h2>
+      <span id="theme-label">Hell</span>
+    </div>
+    <div class="quick-themes" id="theme-options"></div>
+  </section>
+
+  <section>
+    <label for="accent-input">Akzentfarbe</label>
+    <div class="accent-control">
+      <input type="color" id="accent-input" />
+      <button type="button" id="accent-reset">Themefarbe</button>
+    </div>
+  </section>
+
+  <section>
+    <label for="landing-select">Startseite</label>
+    <select id="landing-select">
+      <option value="">Dashboard</option>
+    </select>
+  </section>
+
+  <section>
+    <div class="section-heading">
+      <label for="custom-css-input">Eigenes CSS</label>
+      <span id="css-status">Automatisch gespeichert</span>
+    </div>
+    <textarea id="custom-css-input" rows="4" placeholder="/* CSS für Schulmanager */"></textarea>
+  </section>
+
+  <p class="hint small">Änderungen wirken auf offene Schulmanager-Tabs. Module sortierst du in der Sidebar.</p>
   <script src="popup.js"></script>
 </body>
 </html>
