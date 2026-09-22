@@ -735,10 +735,16 @@ html.smcu-dark-base .fc {
   background: rgba(var(--smcu-accent-rgb), 0.06) !important;
 }
 
-/* Schulmanager has many module-specific rules with hard-coded dark text.
-   Keep those rules readable whenever a dark theme is active. */
-html.smcu-dark-base body * {
-  color: #ffffff !important;
+/* Keep text readable on the dark surfaces defined above without replacing
+  semantic colors used by individual modules. */
+html.smcu-dark-base :where(.card, .modal-content, .dropdown-menu, .popover,
+  .tile, .toast, .calendar-table, .fc)
+  :where(h1, h2, h3, h4, h5, h6, p, span, div, li, td, th, label, small,
+  strong, em, button, input, select, textarea)
+  :not([style*="color"]):not(.text-primary):not(.text-secondary)
+  :not(.text-success):not(.text-danger):not(.text-warning):not(.text-info)
+  :not(.text-muted) {
+  color: #e6e8eb !important;
 }
 html.smcu-dark-base body a,
 html.smcu-dark-base body a:hover,
