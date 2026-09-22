@@ -718,3 +718,28 @@ html.smcu-dark-base .fc {
 .fc-timegrid-col.fc-day-today, .fc-daygrid-day.fc-day-today {
   background: rgba(var(--smcu-accent-rgb), 0.06) !important;
 }
+
+/* Schulmanager has many module-specific rules with hard-coded dark text.
+   Keep those rules readable whenever a dark theme is active. */
+html.smcu-dark-base body * {
+  color: #ffffff !important;
+}
+html.smcu-dark-base body a,
+html.smcu-dark-base body a:hover,
+html.smcu-dark-base .nice-tabs > li > a,
+html.smcu-dark-base .message-username,
+html.smcu-dark-base .message-attachment a,
+html.smcu-dark-base .smcu-link-btn {
+  color: var(--smcu-accent) !important;
+}
+html.smcu-dark-base .broad-alert,
+html.smcu-dark-base .created-updated-info,
+html.smcu-dark-base .inactive-user,
+html.smcu-dark-base .message-timestamp,
+html.smcu-dark-base .message-forward-button,
+html.smcu-dark-base ::placeholder {
+  color: #c8cdd3 !important;
+}
+html.smcu-dark-base .calendar-table td > div[style*="background-color"] {
+  color: #1a1a1a !important;
+}
