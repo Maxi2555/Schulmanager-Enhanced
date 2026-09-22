@@ -520,6 +520,22 @@ html.smcu-fixed-sidebar body { margin-left: var(--smcu-sidebar-width) !important
    Stundenplan - modernes Redesign
    --------------------------------------------------------- */
 .smcu-timetable-wrap { position: relative; }
+.smcu-timetable-export {
+  display: block;
+  margin: 0 0 8px auto;
+  padding: 7px 11px;
+  border: 1px solid var(--smcu-sidebar-border);
+  border-radius: 8px;
+  background: var(--smcu-sidebar-bg);
+  color: var(--smcu-sidebar-fg);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.smcu-timetable-export:hover {
+  border-color: var(--smcu-accent);
+  color: var(--smcu-accent);
+}
 .calendar-table {
   border-collapse: separate !important;
   border-spacing: 0 5px !important;

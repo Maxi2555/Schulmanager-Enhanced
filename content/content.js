@@ -533,6 +533,7 @@
       table.parentNode.insertBefore(wrap, table);
       wrap.appendChild(table);
     }
+    addTimetableExportButton(wrap);
 
     const headerCells = [...table.querySelectorAll("thead th")];
     if (!headerCells.length) return;
@@ -605,6 +606,107 @@
     currentTimetableTable = table;
     currentTodayColIndex = todayColIndex;
     updateNowLine();
+  }
+
+  function icsEscape(value) {
+    return String(value || "")
+      .replace(/\\/g, "\\\\")
+      .replace(/([;,])/g, "\\$1")
+      .replace(/\r?\n/g, "\\n");
+  }
+
+  function formatIcsDate(date, time) {
+    const [hours, minutes] = time.split(":").map(Number);
+    const pad = (number) => String(number).padStart(2, "0");
+    return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}T${pad(hours)}${pad(minutes)}00`;
+  }
+
+  function parseTimetableDate(header) {
+    const match = header.textContent.match(/(\d{1,2})\.(\d{1,2})\.\s*(\d{4})?/);
+    if (!match) return null;
+    const year = Number(match[3]) || new Date().getFullYear();
+    return new Date(year, Number(match[2]) - 1, Number(match[1]));
+  }
+
+  function createTimetableIcs() {
+    const table = document.querySelector("table.calendar-table");
+    if (!table) return null;
+
+    const dates = [...table.querySelectorAll("thead th")].slice(1).map(parseTimetableDate);
+    const dayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+    const events = [];
+
+    table.querySelectorAll("tbody tr.smcu-period-row").forEach((row) => {
+      const periodNumber = parseInt(row.querySelector("th")?.textContent.trim(), 10);
+      const period = PERIODS.find((item) => item.n === periodNumber);
+      if (!period) return;
+
+      [...row.querySelectorAll("td")].forEach((cell, dayIndex) => {
+        const lesson = cell.querySelector(".lesson-cell");
+        const date = dates[dayIndex];
+        if (!lesson || !date || lesson.classList.contains("cancelled")) return;
+
+        const subject = lesson.querySelector(".timetable-left")?.textContent.trim() || "Unterricht";
+        const teacher = lesson.querySelector(".timetable-right")?.textContent.trim();
+        const room = lesson.querySelector(".timetable-bottom")?.textContent.trim();
+        const description = [teacher && `Lehrkraft: ${teacher}`, room && `Raum: ${room}`]
+          .filter(Boolean)
+          .join("\n");
+        const uid = `${date.getTime()}-${period.n}-${dayIndex}-${Math.random().toString(36).slice(2)}@schulmanager-enhanced`;
+
+        events.push([
+          "BEGIN:VEVENT",
+          `UID:${uid}`,
+          `DTSTAMP:${formatIcsDate(new Date(), "00:00")}`,
+          `DTSTART:${formatIcsDate(date, period.start)}`,
+          `DTEND:${formatIcsDate(date, period.end)}`,
+          `RRULE:FREQ=WEEKLY;BYDAY=${dayNames[date.getDay()]}`,
+          `SUMMARY:${icsEscape(subject)}`,
+          `DESCRIPTION:${icsEscape(description)}`,
+          `LOCATION:${icsEscape(room)}`,
+          `X-SMCU-PERIOD:${period.n}`,
+          "END:VEVENT",
+        ].join("\r\n"));
+      });
+    });
+
+    if (!events.length) return null;
+    return [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Schulmanager Enhanced//Timetable//DE",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "X-WR-CALNAME:Schulmanager Stundenplan",
+      ...events,
+      "END:VCALENDAR",
+      "",
+    ].join("\r\n");
+  }
+
+  function downloadTimetableIcs() {
+    const ics = createTimetableIcs();
+    if (!ics) {
+      alert("Im aktuellen Stundenplan wurden keine exportierbaren Unterrichtsstunden gefunden.");
+      return;
+    }
+    const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "schulmanager-stundenplan.ics";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function addTimetableExportButton(wrap) {
+    if (wrap.querySelector(".smcu-timetable-export")) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "smcu-timetable-export";
+    button.title = "Stundenplan als Kalenderdatei exportieren";
+    button.innerHTML = '<span aria-hidden="true">&#128197;</span> Kalender exportieren';
+    button.addEventListener("click", downloadTimetableIcs);
+    wrap.insertBefore(button, wrap.firstChild);
   }
 
   let nowLineEl = null;

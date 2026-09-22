@@ -29,6 +29,9 @@
   markierte Fächer, hervorgehobene heutige Spalte und eine rote
   Live-Zeit-Linie, die während der aktuellen Stunde die aktuelle
   Position anzeigt.
+- **Kalender-Export**: Der sichtbare Stundenplan kann als `.ics`-Datei mit
+  wöchentlich wiederkehrenden Terminen, Uhrzeiten, Lehrkraft und Raum
+  exportiert werden.
 - **Modernisierter Kalender**: abgerundete Termine, dezente
   Hover-Effekte, Akzentfarbe in Toolbar/Buttons, Dark-Mode-taugliche
   Darstellung.
@@ -39,6 +42,9 @@
 - ⚙ „Einstellungen" unten in der Sidebar öffnet den Dialog für Theme,
   Akzentfarbe, Startseite, eigenes CSS und „Module neu einlesen".
 - Modul-Reihenfolge direkt in der Sidebar per Ziehen ändern.
+- Im Stundenplan auf **Kalender exportieren** klicken und die `.ics`-Datei
+  in die gewünschte Kalender-App importieren. Explizit ausgefallene Stunden
+  werden nicht exportiert.
 
 ## Die Stundenplan-Zeiten
 ```
@@ -80,11 +86,7 @@ Temporär geladene Add-ons verschwinden beim Neustart von Firefox und
 müssen dann erneut geladen werden.
 
 ## Dauerhafte Installation
-Für eine dauerhafte, signierte Installation muss das Add-on bei
-Mozilla (addons.mozilla.org) eingereicht werden – auch für rein
-private/unlisted Nutzung kostenlos möglich. Alternativ in der
-Developer Edition / Nightly `xpinstall.signatures.required` auf
-`false` setzen (nur für Entwicklungszwecke).
+https://addons.mozilla.org/de/firefox/addon/schulmanager-enhanced/
 
 ## Wichtiger Hinweis
 Dieses Add-on verändert nur Aussehen/Struktur der bereits im Browser
