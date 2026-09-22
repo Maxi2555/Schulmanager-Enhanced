@@ -569,7 +569,7 @@
 
       [...row.children].forEach((cell, idx) => {
         cell.classList.toggle("smcu-today-cell", idx === todayColIndex);
-        const lesson = cell.querySelector(".lesson-cell");
+        const lesson = getTimetableLesson(cell);
         if (lesson && !lesson.dataset.smcuColored) {
           const subjEl = lesson.querySelector(".timetable-left");
           const hex = colorForSubject(subjEl ? subjEl.textContent.trim() : "");
@@ -615,6 +615,12 @@
       .replace(/\r?\n/g, "\\n");
   }
 
+  function getTimetableLesson(cell) {
+    const lesson = cell.querySelector(".lesson-cell");
+    if (lesson) return lesson;
+    return cell.querySelector(".timetable-left") ? cell : null;
+  }
+
   function formatIcsDate(date, time) {
     const [hours, minutes] = time.split(":").map(Number);
     const pad = (number) => String(number).padStart(2, "0");
@@ -642,7 +648,7 @@
       if (!period) return;
 
       [...row.querySelectorAll("td")].forEach((cell, dayIndex) => {
-        const lesson = cell.querySelector(".lesson-cell");
+        const lesson = getTimetableLesson(cell);
         const date = dates[dayIndex];
         if (!lesson || !date || lesson.classList.contains("cancelled")) return;
 
@@ -819,8 +825,9 @@
 
     restoringPastWeek = true;
     try {
+      const nextWeekChange = waitForTimetableWeekChange(previousSignature);
       nextButton.click();
-      if (!await waitForTimetableWeekChange(previousSignature)) return;
+      if (!await nextWeekChange) return;
 
       enhanceTimetableIfPresent();
       const nextTable = document.querySelector("table.calendar-table");
@@ -833,8 +840,9 @@
 
       const previousButton = document.querySelector(".week-navigation .calendar-week-column-flex > div:first-child button");
       if (!previousButton) return;
+      const restoredWeekChange = waitForTimetableWeekChange(getTimetableWeekSignature());
       previousButton.click();
-      if (!await waitForTimetableWeekChange(getTimetableWeekSignature())) return;
+      if (!await restoredWeekChange) return;
 
       const restoredTable = document.querySelector("table.calendar-table");
       const restoredPeriods = [...(restoredTable ? restoredTable.querySelectorAll("tbody tr.smcu-period-row") : [])];
