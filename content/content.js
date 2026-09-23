@@ -10,6 +10,7 @@
   const LANDING_KEY = "smcuLandingPage";
   const MODULE_ORDER_KEY = "smcuModuleOrder";
   const MODULE_CACHE_KEY = "smcuModuleCache";
+  const TIMETABLE_CACHE_KEY = "smcuTimetableCache";
 
   const SMCU_THEMES = [
     { id: "light", label: "Hell" },
@@ -526,13 +527,19 @@
       return;
     }
 
-    let wrap = table.parentElement;
-    if (!wrap.classList.contains("smcu-timetable-wrap")) {
+    let wrap = table.closest(".smcu-timetable-wrap");
+    if (!wrap) {
       wrap = document.createElement("div");
       wrap.className = "smcu-timetable-wrap";
       table.parentNode.insertBefore(wrap, table);
-      wrap.appendChild(table);
     }
+    while (wrap.parentElement?.closest(".smcu-timetable-wrap")) {
+      wrap = wrap.parentElement.closest(".smcu-timetable-wrap");
+    }
+    if (table.parentElement !== wrap) wrap.appendChild(table);
+    document.querySelectorAll(".smcu-timetable-wrap").forEach((candidate) => {
+      if (candidate !== wrap) candidate.remove();
+    });
     addTimetableExportButton(wrap);
 
     const headerCells = [...table.querySelectorAll("thead th")];
@@ -551,9 +558,6 @@
       }
     });
 
-    // Vorher eingefügte Pausen-Zeilen entfernen (Angular kann die Woche neu rendern)
-    table.querySelectorAll("tbody > tr.smcu-break-row").forEach((r) => r.remove());
-
     const bodyRows = [...table.querySelectorAll("tbody > tr")];
     bodyRows.forEach((row) => {
       const thCell = row.querySelector("th");
@@ -562,7 +566,10 @@
       const period = PERIODS.find((p) => p.n === num);
       if (!period) return;
 
-      thCell.innerHTML = `<span class="smcu-period-num">${period.n}</span><span class="smcu-period-time">${period.start}\u2013${period.end}</span>`;
+      if (thCell.dataset.smcuPeriod !== String(period.n) || !thCell.querySelector(".smcu-period-time")) {
+        thCell.innerHTML = `<span class="smcu-period-num">${period.n}</span><span class="smcu-period-time">${period.start}\u2013${period.end}</span>`;
+        thCell.dataset.smcuPeriod = String(period.n);
+      }
       row.dataset.smcuStart = timeToMinutes(period.start);
       row.dataset.smcuEnd = timeToMinutes(period.end);
       row.classList.add("smcu-period-row");
@@ -580,6 +587,13 @@
         }
       });
     });
+
+    if (table.querySelector("tbody > tr.smcu-break-row")) {
+      currentTimetableTable = table;
+      currentTodayColIndex = todayColIndex;
+      updateNowLine();
+      return;
+    }
 
     for (let i = 0; i < PERIODS.length - 1; i++) {
       const curr = PERIODS[i];
@@ -634,45 +648,51 @@
     return new Date(year, Number(match[2]) - 1, Number(match[1]));
   }
 
-  function createTimetableIcs() {
-    const table = document.querySelector("table.calendar-table");
-    if (!table) return null;
+  async function createTimetableIcs() {
+    const cache = await getStored(TIMETABLE_CACHE_KEY, {});
+    if (getTimetableCacheProgress(cache) < 50) return null;
 
-    const dates = [...table.querySelectorAll("thead th")].slice(1).map(parseTimetableDate);
     const dayNames = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
     const events = [];
 
-    table.querySelectorAll("tbody tr.smcu-period-row").forEach((row) => {
-      const periodNumber = parseInt(row.querySelector("th")?.textContent.trim(), 10);
-      const period = PERIODS.find((item) => item.n === periodNumber);
-      if (!period) return;
+    Object.entries(cache).forEach(([cycleKey, cycle]) => {
+      if (!cycle || typeof cycle !== "object") return;
+      const dates = cycle.__meta?.dates?.map(parseTimetableKey) || [];
+      const interval = isCycleKey(cycleKey, "A") || isCycleKey(cycleKey, "B") ? 2 : 1;
 
-      [...row.querySelectorAll("td")].forEach((cell, dayIndex) => {
-        const lesson = getTimetableLesson(cell);
-        const date = dates[dayIndex];
-        if (!lesson || !date || lesson.classList.contains("cancelled")) return;
+      PERIODS.forEach((period) => {
+        const savedDays = cycle[String(period.n)];
+        for (let dayIndex = 0; dayIndex < 5; dayIndex++) {
+          const entry = normalizeTimetableEntry(savedDays?.[dayIndex]);
+          const date = dates[dayIndex];
+          if (!entry?.markup || !date) continue;
 
-        const subject = lesson.querySelector(".timetable-left")?.textContent.trim() || "Unterricht";
-        const teacher = lesson.querySelector(".timetable-right")?.textContent.trim();
-        const room = lesson.querySelector(".timetable-bottom")?.textContent.trim();
-        const description = [teacher && `Lehrkraft: ${teacher}`, room && `Raum: ${room}`]
-          .filter(Boolean)
-          .join("\n");
-        const uid = `${date.getTime()}-${period.n}-${dayIndex}-${Math.random().toString(36).slice(2)}@schulmanager-enhanced`;
+          const holder = document.createElement("div");
+          holder.innerHTML = entry.markup;
+          const lesson = holder.querySelector(".lesson-cell") || holder;
+          if (lesson.classList.contains("cancelled")) continue;
+          const subject = lesson.querySelector(".timetable-left")?.textContent.trim() || "Unterricht";
+          const teacher = lesson.querySelector(".timetable-right")?.textContent.trim();
+          const room = lesson.querySelector(".timetable-bottom")?.textContent.trim();
+          const description = [teacher && `Lehrkraft: ${teacher}`, room && `Raum: ${room}`]
+            .filter(Boolean)
+            .join("\n");
+          const uid = `${cycleKey}-${dateToTimetableKey(date)}-${period.n}@schulmanager-enhanced`;
 
-        events.push([
-          "BEGIN:VEVENT",
-          `UID:${uid}`,
-          `DTSTAMP:${formatIcsDate(new Date(), "00:00")}`,
-          `DTSTART:${formatIcsDate(date, period.start)}`,
-          `DTEND:${formatIcsDate(date, period.end)}`,
-          `RRULE:FREQ=WEEKLY;BYDAY=${dayNames[date.getDay()]}`,
-          `SUMMARY:${icsEscape(subject)}`,
-          `DESCRIPTION:${icsEscape(description)}`,
-          `LOCATION:${icsEscape(room)}`,
-          `X-SMCU-PERIOD:${period.n}`,
-          "END:VEVENT",
-        ].join("\r\n"));
+          events.push([
+            "BEGIN:VEVENT",
+            `UID:${icsEscape(uid)}`,
+            `DTSTAMP:${formatIcsDate(new Date(), "00:00")}`,
+            `DTSTART:${formatIcsDate(date, period.start)}`,
+            `DTEND:${formatIcsDate(date, period.end)}`,
+            `RRULE:FREQ=WEEKLY;INTERVAL=${interval};BYDAY=${dayNames[date.getDay()]}`,
+            `SUMMARY:${icsEscape(subject)}`,
+            `DESCRIPTION:${icsEscape(description)}`,
+            `LOCATION:${icsEscape(room)}`,
+            `X-SMCU-PERIOD:${period.n}`,
+            "END:VEVENT",
+          ].join("\r\n"));
+        }
       });
     });
 
@@ -690,22 +710,32 @@
     ].join("\r\n");
   }
 
-  function downloadTimetableIcs() {
-    const ics = createTimetableIcs();
+  async function downloadTimetableIcs() {
+    const ics = await createTimetableIcs();
     if (!ics) {
-      alert("Im aktuellen Stundenplan wurden keine exportierbaren Unterrichtsstunden gefunden.");
+      alert("Der Stundenplan ist noch nicht zu 50 % gespeichert oder enthält keine exportierbaren Stunden.");
       return;
     }
     const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
     const link = document.createElement("a");
     link.href = url;
     link.download = "schulmanager-stundenplan.ics";
+    link.style.display = "none";
+    document.body.appendChild(link);
     link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setTimeout(() => {
+      link.remove();
+      URL.revokeObjectURL(url);
+    }, 1000);
   }
 
   function addTimetableExportButton(wrap) {
-    if (wrap.querySelector(".smcu-timetable-export")) return;
+    let keptButton = false;
+    document.querySelectorAll(".smcu-timetable-export").forEach((button) => {
+      if (!wrap.contains(button) || keptButton) button.remove();
+      else keptButton = true;
+    });
+    if (keptButton) return;
     const button = document.createElement("button");
     button.type = "button";
     button.className = "smcu-timetable-export";
@@ -722,6 +752,9 @@
     const wrap = table.closest(".smcu-timetable-wrap");
     if (!wrap) return;
 
+    document.querySelectorAll(".smcu-now-line").forEach((line) => {
+      if (!wrap.contains(line) || line !== nowLineEl) line.remove();
+    });
     if (!nowLineEl || !wrap.contains(nowLineEl)) {
       nowLineEl = document.createElement("div");
       nowLineEl.className = "smcu-now-line";
@@ -774,91 +807,118 @@
     else currentTimetableTable = null;
   }
 
-  let restoringPastWeek = false;
+  let timetableCacheInFlight = false;
 
-  function getTimetableWeekSignature() {
-    const table = document.querySelector("table.calendar-table");
-    if (!table) return "";
-    return [...table.querySelectorAll("thead th")].map((th) => th.textContent.trim()).join("|");
+  function getTimetableCycleKey() {
+    const label = document.querySelector(".timetable-occurrences")?.textContent.trim();
+    const cycle = label?.match(/Woche\s+_?([AB])\b/i);
+    if (cycle) return `Woche _${cycle[1].toUpperCase()}`;
+    return label ? label.replace(/\s+/g, " ") : "default";
   }
 
-  function waitForTimetableWeekChange(previousSignature, timeoutMs) {
-    return new Promise((resolve) => {
-      const changed = () => {
-        const signature = getTimetableWeekSignature();
-        if (signature && signature !== previousSignature) {
-          observer.disconnect();
-          clearTimeout(timeout);
-          resolve(signature);
-        }
-      };
-      const observer = new MutationObserver(changed);
-      const timeout = setTimeout(() => {
-        observer.disconnect();
-        resolve("");
-      }, timeoutMs || 3000);
-      observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-      changed();
-    });
+  function dateToTimetableKey(date) {
+    if (!date) return "";
+    const pad = (value) => String(value).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   }
 
-  function cleanRecurringLessonMarkup(markup) {
-    const holder = document.createElement("div");
-    holder.innerHTML = markup;
-    holder.querySelectorAll(".lesson-cell").forEach((lesson) => {
-      lesson.classList.remove("cancelled", "substituted", "substitution", "changed");
-      lesson.removeAttribute("data-smcu-colored");
-      lesson.style.removeProperty("text-decoration");
-    });
-    return holder.innerHTML;
+  function parseTimetableKey(value) {
+    const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return null;
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
   }
 
-  async function restorePastWeekDays() {
-    if (restoringPastWeek || currentTodayColIndex <= 1) return;
-    const currentTable = document.querySelector("table.calendar-table");
-    const previousSignature = getTimetableWeekSignature();
-    if (!currentTable || !previousSignature) return;
-    const pastDayCount = currentTodayColIndex - 1;
+  function normalizeTimetableEntry(entry) {
+    if (typeof entry === "string") return { known: true, markup: entry };
+    if (entry && entry.known) return entry;
+    return null;
+  }
 
-    const nextButton = document.querySelector(".week-navigation .calendar-week-column-flex > div:last-child button");
-    if (!nextButton) return;
+  function isCycleKey(key, cycle) {
+    return new RegExp(`Woche\\s+_?${cycle}\\b`, "i").test(key);
+  }
 
-    restoringPastWeek = true;
-    try {
-      const nextWeekChange = waitForTimetableWeekChange(previousSignature);
-      nextButton.click();
-      if (!await nextWeekChange) return;
-
-      enhanceTimetableIfPresent();
-      const nextTable = document.querySelector("table.calendar-table");
-      const recurringRows = new Map(
-        [...(nextTable ? nextTable.querySelectorAll("tbody tr.smcu-period-row") : [])].map((row) => [
-          row.querySelector("th")?.textContent.trim().split(/\s+/)[0],
-          [...row.querySelectorAll("td")].map((cell) => cleanRecurringLessonMarkup(cell.innerHTML)),
-        ])
-      );
-
-      const previousButton = document.querySelector(".week-navigation .calendar-week-column-flex > div:first-child button");
-      if (!previousButton) return;
-      const restoredWeekChange = waitForTimetableWeekChange(getTimetableWeekSignature());
-      previousButton.click();
-      if (!await restoredWeekChange) return;
-
-      const restoredTable = document.querySelector("table.calendar-table");
-      const restoredPeriods = [...(restoredTable ? restoredTable.querySelectorAll("tbody tr.smcu-period-row") : [])];
-      restoredPeriods.forEach((row) => {
-        const periodNumber = row.querySelector("th")?.textContent.trim().split(/\s+/)[0];
-        const recurringCells = recurringRows.get(periodNumber);
-        if (!recurringCells) return;
-        [...row.querySelectorAll("td")].forEach((cell, index) => {
-          if (index >= pastDayCount || recurringCells[index] === undefined) return;
-          cell.innerHTML = recurringCells[index];
-          cell.dataset.smcuWeekRestored = "1";
+  function getTimetableCacheProgress(cache) {
+    const totalSlots = PERIODS.length * 5 * 2;
+    let knownSlots = 0;
+    ["A", "B"].forEach((cycle) => {
+      Object.entries(cache || {}).forEach(([key, periods]) => {
+        if (!isCycleKey(key, cycle) || !periods || typeof periods !== "object") return;
+        PERIODS.forEach((period) => {
+          const days = periods[String(period.n)];
+          for (let day = 0; day < 5; day++) {
+            if (normalizeTimetableEntry(days?.[day])) knownSlots++;
+          }
         });
       });
-      enhanceTimetable();
+    });
+    return Math.min(100, Math.round((knownSlots / totalSlots) * 100));
+  }
+
+  function getTimetableDate(header) {
+    const match = header.textContent.match(/(\d{1,2})\.(\d{1,2})\.\s*(\d{4})?/);
+    if (!match) return null;
+    return new Date(
+      Number(match[3]) || new Date().getFullYear(),
+      Number(match[2]) - 1,
+      Number(match[1])
+    );
+  }
+
+  async function syncTimetableCache() {
+    if (timetableCacheInFlight) return;
+    const table = document.querySelector("table.calendar-table");
+    if (!table) return;
+
+    timetableCacheInFlight = true;
+    try {
+      const storedCache = await getStored(TIMETABLE_CACHE_KEY, {});
+      const cache = storedCache && typeof storedCache === "object" && !Array.isArray(storedCache)
+        ? storedCache
+        : {};
+      const cycleKey = getTimetableCycleKey();
+      const storedCycle = cache[cycleKey];
+      const cycle = storedCycle && typeof storedCycle === "object" && !Array.isArray(storedCycle)
+        ? storedCycle
+        : {};
+      const headers = [...table.querySelectorAll("thead th")].slice(1);
+      const dates = headers.map(getTimetableDate);
+      const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isCurrentWeek = dates.some((date) => date && date.getTime() === todayStart.getTime());
+      cycle.__meta = { dates: dates.map(dateToTimetableKey) };
+
+      table.querySelectorAll("tbody tr.smcu-period-row").forEach((row) => {
+        const periodNumber = parseInt(row.querySelector("th")?.textContent.trim(), 10);
+        if (!periodNumber) return;
+        const periodKey = String(periodNumber);
+        const savedDays = cycle[periodKey] || {};
+
+        [...row.querySelectorAll("td")].forEach((cell, dayIndex) => {
+          const lesson = getTimetableLesson(cell);
+          if (lesson) {
+            savedDays[dayIndex] = { known: true, markup: lesson.outerHTML };
+            return;
+          }
+
+          const date = dates[dayIndex];
+          const savedEntry = normalizeTimetableEntry(savedDays[dayIndex]);
+          const isPastCurrentDay = date && date < todayStart;
+          if (isPastCurrentDay && savedEntry?.markup) {
+            cell.innerHTML = savedEntry.markup;
+            cell.dataset.smcuWeekRestored = "1";
+          } else if (!isCurrentWeek || !isPastCurrentDay) {
+            savedDays[dayIndex] = { known: true, markup: "" };
+          }
+        });
+
+        if (Object.keys(savedDays).length) cycle[periodKey] = savedDays;
+      });
+
+      cache[cycleKey] = cycle;
+      await setStored(TIMETABLE_CACHE_KEY, cache);
     } finally {
-      restoringPastWeek = false;
+      timetableCacheInFlight = false;
     }
   }
 
@@ -923,6 +983,7 @@
     clearTimeout(enhanceDebounce);
     enhanceDebounce = setTimeout(() => {
       enhanceTimetableIfPresent();
+      syncTimetableCache();
       invertAttendanceStats();
     }, 150);
   }
@@ -947,7 +1008,6 @@
     renderSidebarExtras();
     await populateLandingSelect();
     enhanceTimetableIfPresent();
-    restorePastWeekDays();
     refreshModuleList().then(async () => {
       await renderSidebarModules();
       renderSidebarExtras();
