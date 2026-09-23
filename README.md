@@ -38,7 +38,10 @@ wichtigsten Funktionen:
   automatisch berechnete Pausen-Leisten ("5 min Pause" etc.), farblich
   markierte Fächer, hervorgehobene heutige Spalte und eine rote
   Live-Zeit-Linie, die während der aktuellen Stunde die aktuelle
-  Position anzeigt.
+  Position anzeigt. Sichtbare Stunden werden lokal gespeichert;
+  unterschiedliche Wochenrhythmen (z.B. Woche A und Woche B) bleiben
+  getrennt und vergangene, später nicht mehr geladene Stunden können daraus
+  ergänzt werden.
 - **Kalender-Export**: Der sichtbare Stundenplan kann als `.ics`-Datei mit
   wöchentlich wiederkehrenden Terminen, Uhrzeiten, Lehrkraft und Raum
   exportiert werden.
