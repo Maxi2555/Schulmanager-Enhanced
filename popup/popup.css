@@ -16,6 +16,9 @@ h2 { font-size: 12px; margin: 0; }
 section { margin-bottom: 16px; }
 .section-heading { margin-bottom: 7px; }
 .section-heading span { color: #78817b; font-size: 10px; }
+.timetable-progress-section { padding: 10px; border: 1px solid #dce5df; border-radius: 8px; background: #fff; }
+.progress-track { height: 6px; overflow: hidden; border-radius: 999px; background: #e6ece8; }
+.progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2f6f4e, #3fae76); transition: width .2s ease; }
 .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #3fae76; box-shadow: 0 0 0 4px rgba(63,174,118,.14); }
 .quick-themes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .quick-themes button { width: 100%; aspect-ratio: 1; padding: 3px; border: 2px solid transparent; border-radius: 7px; background: var(--theme-preview, #fff); cursor: pointer; }

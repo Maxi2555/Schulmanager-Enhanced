@@ -3,6 +3,9 @@ const ACCENT_KEY = "smcuAccent";
 const CUSTOM_CSS_KEY = "smcuCustomCss";
 const LANDING_KEY = "smcuLandingPage";
 const MODULE_CACHE_KEY = "smcuModuleCache";
+const TIMETABLE_CACHE_KEY = "smcuTimetableCache";
+const TIMETABLE_PERIOD_COUNT = 11;
+const TIMETABLE_DAY_COUNT = 5;
 
 const THEMES = [
   ["light", "Hell", "#f7f8f6"], ["dark", "Dunkel", "#1a1c20"],
@@ -35,6 +38,36 @@ const getStored = async (key, fallback) => {
 };
 const setStored = (key, value) => browser.storage.local.set({ [key]: value });
 
+function isCycleKey(key, cycle) {
+  return new RegExp(`Woche\\s+_?${cycle}\\b`, "i").test(key);
+}
+
+function isKnownTimetableEntry(entry) {
+  return typeof entry === "string" || Boolean(entry && entry.known);
+}
+
+function timetableProgress(cache) {
+  let knownSlots = 0;
+  ["A", "B"].forEach((cycle) => {
+    Object.entries(cache || {}).forEach(([key, periods]) => {
+      if (!isCycleKey(key, cycle) || !periods || typeof periods !== "object") return;
+      for (let period = 1; period <= TIMETABLE_PERIOD_COUNT; period++) {
+        const days = periods[String(period)];
+        for (let day = 0; day < TIMETABLE_DAY_COUNT; day++) {
+          if (isKnownTimetableEntry(days?.[day])) knownSlots++;
+        }
+      }
+    });
+  });
+  return Math.min(100, Math.round((knownSlots / (TIMETABLE_PERIOD_COUNT * TIMETABLE_DAY_COUNT * 2)) * 100));
+}
+
+async function renderTimetableProgress() {
+  const progress = timetableProgress(await getStored(TIMETABLE_CACHE_KEY, {}));
+  $("#timetable-progress-text").textContent = `Stundenplan zu ${progress}% Gespeichert`;
+  $("#timetable-progress-bar").style.width = `${progress}%`;
+}
+
 function renderThemes(currentTheme) {
   const container = $("#theme-options");
   container.innerHTML = "";
@@ -61,6 +94,7 @@ async function init() {
   const themeData = THEMES.find(([id]) => id === theme) || THEMES[0];
   renderThemes(themeData[0]);
   $("#theme-label").textContent = themeData[1];
+  await renderTimetableProgress();
 
   const accent = await getStored(ACCENT_KEY, "");
   $("#accent-input").value = accent || THEME_ACCENTS[themeData[0]];
@@ -87,5 +121,9 @@ async function init() {
     }, 400);
   });
 }
+
+browser.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes[TIMETABLE_CACHE_KEY]) renderTimetableProgress();
+});
 
 init();
